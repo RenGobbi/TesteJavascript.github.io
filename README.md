@@ -1,4 +1,6 @@
 # https://rengobbi.github.io/TesteJavascript.github.io/
 Visualização de dados meteorológicos em uma planilha ordenada por data.
 
-clique em download zip para baixar os arquivos.
+- Clique em download zip para baixar os arquivos.
+- Mantenha-os dentro de uma mesma pasta.
+- Click em index.html para visualizar a planilha.
