@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="parse.js"></script>
+
+<style>
+    table, th, td {
+        border: 1px solid grey;
+        border-collapse: collapse;
+        padding: 5px;
+    }
+        table tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+</style>
+
+
+<body>
+	<!--<a href="https://github.com/RenGobbi/parse.js"></a>-->
+    <div ng-app="myApp" ng-controller="myCtrl">
+
+        <p>Planilha de dados da REDEMET para o aeroporto de Vitória no período de 01/01/17 à 10/01/17:</p>
+
+        <!--<p>The $http service requests a page on the server, and the response is set as the value of the "metar" variable.</p>-->
+
+        
+
+        <!--<ul>
+            <li ng-repeat="x in metar">{{x}}</li>
+        </ul>-->
+
+        <table>
+	    <tr>
+              <th width="100px">Índice</th>
+	      <!--<th width="60%">Tipo</th>-->
+	      <!--<th width="60%">Local</th>-->
+              <th width=100px">Data/Hora</th>
+	      <th>Temperatura [°C]</th>
+	      <th>Direção do vento [°]</th>
+              <th>Velocidade do vento [m/s]</th>
+	      <th>Pressão [hPa]</th>
+              <!--<th>Dado completo</th>-->
+            </tr>
+            <tr ng-repeat="x in metar | orderBy:'time'">
+                <td align=center>{{ $index + 1 }}</td>
+                <!--<td align=center>{{ x.type }}</td>-->
+		<!--<td align=center>{{ x.station }}</td>-->
+                <td align=center>{{ x.time }}</td>
+		<td align=center>{{ x.temperature }}</td>
+		<td align=center>{{ x.wind.direction }}</td>
+                <td align=center>{{ (x.wind.speed/0.51).toFixed(2) }}</td>
+		<td align=center>{{ x.altimeterInHpa }}</td>
+                <!--<td align=center>{{ x }}</td>-->
+            </tr>
+        </table>
+	<p>*Dados fornecidos à 00 hora de cada dia.</p>
+	<br></br><br></br>
+	<p>DADOS NO FORMATO METAR.</p>
+	
+	
+    <h1>{{metar}}</h1>
+    </div>
+    <script>
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function ($scope, $http) {
+            var x = [];
+            for (var i = 1; i <= 10; i++) {
+                var dia = String(i);
+                if (i < 10)
+                    dia = "0" + dia;
+                var url = "http://www.redemet.aer.mil.br/api/consulta_automatica/index.php?local=sbvt&msg=metar&data_ini=201701"+dia+"00&data_fim=201701"+dia+"00"
+                <!--var url = "http://www.redemet.aer.mil.br/api/consulta_automatica/index.php?local=sbvt&msg=metar&data_ini=201701"+dia+"01&data_fim=201701"+dia+"10"-->
+                $http.get(url).then(function (response) {
+                    x.push (parseMETAR(response.data.substring(13, 1000)));
+                })
+            }
+            $scope.metar =  x ;
+ 
+        });
+    </script>
+ </body>
+</html>
